@@ -1,2 +1,6 @@
 Find all owner references
 oc get pod -A -o json | jq -r '.items[] | select(.metadata.ownerReferences[0]!="") | "\(.metadata.name) ||  \(.metadata.namespace) || \(.metadata.ownerReferences[0].name)"'
+
+
+Get deployment all env used
+oc get deployment -n openshift-network-operator -o json  | jq -r '[.items[] | select(.spec.template.spec.containers[0].env[]) | {name:.metadata.name,namespace: .metadata.namespace,env:.spec.template.spec.containers[0].env[]?.name}]'
