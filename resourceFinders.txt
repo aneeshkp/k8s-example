@@ -31,3 +31,15 @@ Chassis Power Control: Down/Off
 Unable to Get Channel Cipher Suites
 Chassis Power is off
 [kni@nfvha-comp-06 kni-ipi-virt]$ sudo firewall-cmd --add-port="6252"/udp --zone=public --permanent
+
+
+
+oc get pods -n openshift-machine-api
+NAME                                          READY   STATUS    RESTARTS   AGE
+cluster-autoscaler-operator-c6b5bf6f7-srsss   2/2     Running   0          7d20h
+machine-api-controllers-58cc5dd54d-vqvbm      4/4     Running   0          7d20h
+machine-api-operator-7b5d597bf5-hldvn         2/2     Running   1          7d20h
+metal3-7b6bf7c4f8-xgkms                       8/8     Running   0          7d20h
+[kni@nfvha-comp-06 kni-ipi-virt]$ oc exec -it metal3-7b6bf7c4f8-xgkms -n openshift-machine-api -c metal3-ironic-conductor /bin/bash                                                                                                          
+[root@multus-master-1 /]# ipmitool -I lanplus -U ADMIN -P ADMIN -H 10.0.1.2 -p "6252" chassis power status                                                                                                                                   
+Chassis Power is off
