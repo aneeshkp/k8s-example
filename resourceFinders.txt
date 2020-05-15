@@ -4,3 +4,6 @@ oc get pod -A -o json | jq -r '.items[] | select(.metadata.ownerReferences[0]!="
 
 Get deployment all env used
 oc get deployment -n openshift-network-operator -o json  | jq -r '[.items[] | select(.spec.template.spec.containers[0].env[]) | {name:.metadata.name,namespace: .metadata.namespace,env:.spec.template.spec.containers[0].env[]?.name}]'
+
+
+sudo virt-install --ram 16384 --vcpus 4 --os-variant rhel8.0 --cpu host-passthrough --disk size=60,pool=default,device=disk,bus=virtio,format=qcow2 --import --noautoconsole --vnc --network=bridge:provisioning,mac="52:54:00:82:68:52" --network=bridge:baremetal,mac="52:54:00:82:69:52" --name "multus-worker-cnf-0" --os-type=linux --events on_reboot=restart --boot hd,network 
