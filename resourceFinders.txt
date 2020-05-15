@@ -7,3 +7,27 @@ oc get deployment -n openshift-network-operator -o json  | jq -r '[.items[] | se
 
 
 sudo virt-install --ram 16384 --vcpus 4 --os-variant rhel8.0 --cpu host-passthrough --disk size=60,pool=default,device=disk,bus=virtio,format=qcow2 --import --noautoconsole --vnc --network=bridge:provisioning,mac="52:54:00:82:68:52" --network=bridge:baremetal,mac="52:54:00:82:69:52" --name "multus-worker-cnf-0" --os-type=linux --events on_reboot=restart --boot hd,network 
+
+
+
+
+[kni@nfvha-comp-06 kni-ipi-virt]$ vbmc add "multus-worker-cnf-0" --port "6252" --username ADMIN --password ADMIN                                                                                                                             
+[kni@nfvha-comp-06 kni-ipi-virt]$ vbmc list
++---------------------+---------+---------+------+
+| Domain name         | Status  | Address | Port |
++---------------------+---------+---------+------+
+| multus-master-0     | running | ::      | 6240 |
+| multus-master-1     | running | ::      | 6241 |
+| multus-master-2     | running | ::      | 6242 |
+| multus-worker-0     | running | ::      | 6250 |
+| multus-worker-1     | running | ::      | 6251 |
+| multus-worker-cnf-0 | down    | ::      | 6252 |
++---------------------+---------+---------+------+
+[kni@nfvha-comp-06 kni-ipi-virt]$ vbmc start multus-worker-cnf-0
+[kni@nfvha-comp-06 kni-ipi-virt]$ ipmitool -I lanplus -U ADMIN -P ADMIN -H 127.0.0.1 -p "6252" power off
+Unable to Get Channel Cipher Suites
+Chassis Power Control: Down/Off
+[kni@nfvha-comp-06 kni-ipi-virt]$ ipmitool -I lanplus -U ADMIN -P ADMIN -H 127.0.0.1 -p "6252" chassis power status
+Unable to Get Channel Cipher Suites
+Chassis Power is off
+[kni@nfvha-comp-06 kni-ipi-virt]$ sudo firewall-cmd --add-port="6252"/udp --zone=public --permanent
